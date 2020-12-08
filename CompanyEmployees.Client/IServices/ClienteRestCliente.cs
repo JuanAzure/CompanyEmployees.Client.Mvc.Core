@@ -29,13 +29,20 @@ namespace CompanyEmployees.Client.IServices
 
         public async Task<ClienteViewModel> GetById(int Id)
         {
-
-            var httpClient = _httpClientFactory.CreateClient("APIClient");
-            var response = await httpClient.GetAsync("api/cliente/" + Id).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            var clienteString = await response.Content.ReadAsStringAsync();
-            var clientes = JsonSerializer.Deserialize<ClienteViewModel>(clienteString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return clientes;
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("APIClient");
+                var response = await httpClient.GetAsync("api/cliente/" + Id).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+                var clienteString = await response.Content.ReadAsStringAsync();
+                var clientes = JsonSerializer.Deserialize<ClienteViewModel>(clienteString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return clientes;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentNullException(ex.Message);
+            }
+            
         }
 
         public Task<HttpResponseMessage> Create(ClienteViewModel clienteViewModel)
@@ -62,9 +69,9 @@ namespace CompanyEmployees.Client.IServices
                 return httpClient.PutAsJsonAsync("api/cliente", clienteViewModel);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                throw new ArgumentException(ex.Message);
 
             }
         }
@@ -87,5 +94,9 @@ namespace CompanyEmployees.Client.IServices
             }
         }
 
+        public Task<HttpResponseMessage> sDelete(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

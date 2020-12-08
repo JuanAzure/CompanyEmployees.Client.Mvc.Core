@@ -14,8 +14,8 @@ namespace CompanyEmployees.Client.IServices
         Task<HttpResponseMessage> Update(ClienteViewModel clienteViewModel);
 
         Task<HttpResponseMessage> Delete(int id);
+        Task<HttpResponseMessage> sDelete(int id);
 
 
-        
     }
 }

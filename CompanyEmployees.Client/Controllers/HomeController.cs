@@ -3,13 +3,15 @@ using CompanyEmployees.Client.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Net;
 
 namespace CompanyEmployees.Client.Controllers
 {
     [Route("Home")]
     public class HomeController : Controller
     {
-      
+
         private readonly ILogger<HomeController> _logger;
         private readonly IClienteRestCliente _clienteRestCliente;
         public HomeController(ILogger<HomeController> logger, IClienteRestCliente clienteRestCliente)
@@ -23,7 +25,8 @@ namespace CompanyEmployees.Client.Controllers
         [Route("Index")]
         public async Task<ActionResult> Index()
         {
-            return View(await _clienteRestCliente.GetAll());
+            var clientes = await _clienteRestCliente.GetAll();
+            return View(clientes);
         }
 
 
@@ -39,7 +42,7 @@ namespace CompanyEmployees.Client.Controllers
         [Route("create")]
         public async Task<IActionResult> Create(ClienteViewModel clienteViewModel)
         {
-           await _clienteRestCliente.Create(clienteViewModel);
+            await _clienteRestCliente.Create(clienteViewModel);
             return RedirectToAction("Index");
         }
 
@@ -49,19 +52,17 @@ namespace CompanyEmployees.Client.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var client = await _clienteRestCliente.GetById(id);
-            return View("edit",  client);
+            return View("edit", client);
         }
 
 
         [HttpPost]
         [Route("edit/{id}")]
-        public async Task<IActionResult> Edit(int id,ClienteViewModel clienteViewModel)
+        public async Task<IActionResult> Edit(int id, ClienteViewModel clienteViewModel)
         {
             await _clienteRestCliente.Update(clienteViewModel);
             return RedirectToAction("Index");
         }
-
-
 
         [Route("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -69,5 +70,6 @@ namespace CompanyEmployees.Client.Controllers
             await _clienteRestCliente.Delete(id);
             return RedirectToAction("Index");
         }
+
     }
 }
